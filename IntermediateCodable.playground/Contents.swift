@@ -57,7 +57,6 @@ struct Current: Codable {
         case temperatureCelsius = "tempC"
         case temperatureFahrenheit = "tempF"
         case condition, lastUpdatedEpoch
-        case lastUpdated
     }
     
     let temperatureCelsius, temperatureFahrenheit: Double
@@ -68,7 +67,7 @@ struct Current: Codable {
     let lastUpdated: Date
 
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: Self.CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         temperatureCelsius = try container.decode(Double.self, forKey: .temperatureCelsius)
         temperatureFahrenheit = try container.decode(Double.self, forKey: .temperatureFahrenheit)
         condition = try container.decode(Condition.self, forKey: .condition)
@@ -117,20 +116,16 @@ struct Forecast: Codable {
 }
 
 struct DayForecast: Codable {
-    let date: String
-    let dateEpoch: Int
-    let day: Day
-    let astro: Astronomy
-
     enum CodingKeys: String, CodingKey {
         case date
         case dateEpoch
         case day, astro
     }
-}
-
-struct Astronomy: Codable {
-    let sunrise, sunset, moonrise, moonset: String
+    
+    let date: String
+    let dateEpoch: Int
+    let day: Day
+    let astro: Astronomy
 }
 
 struct Day: Codable {
@@ -142,6 +137,10 @@ struct Day: Codable {
     
     let high, low: Double
     let condition: Condition
+}
+
+struct Astronomy: Codable {
+    let sunrise, sunset, moonrise, moonset: String
 }
 
 if let data = try? Data(contentsOf: url) {
