@@ -7,7 +7,7 @@ import UIKit
  - Epoch time converter — [epochconverter.com](https://www.epochconverter.com)
  */
 
-let apiKey = "ENTER_API_KEY"
+let apiKey = "5a9f9e5d57724936aff102445200904"
 let zipCode = 63025
 let numberOfDays = 3
 let url = URL(string: "https://api.weatherapi.com/v1/forecast.json?key=\(apiKey)&q=\(zipCode)&days=\(numberOfDays)")!
@@ -27,10 +27,10 @@ if let date = dateFormatter.date(from: "2020-04-08T20:26:00-05:00") {
 }
 
 struct ForecastResult: Codable {
+    let alert: Alert
     let location: Location
     let current: Current
     let forecast: Forecast
-    let alert: Alert
 }
 
 struct Alert: Codable {
@@ -39,6 +39,17 @@ struct Alert: Codable {
     let note: String
     let effective, expires: Date
     let desc, instruction: String
+}
+
+struct Location: Codable {
+    enum CodingKeys: String, CodingKey {
+        case name, region, country, lat, lon
+        case localTime = "localtime"
+    }
+    
+    let name, region, country: String
+    let lat, lon: Double
+    let localTime: String
 }
 
 struct Current: Codable {
@@ -131,17 +142,6 @@ struct Day: Codable {
     
     let high, low: Double
     let condition: Condition
-}
-
-struct Location: Codable {
-    enum CodingKeys: String, CodingKey {
-        case name, region, country, lat, lon
-        case localTime = "localtime"
-    }
-    
-    let name, region, country: String
-    let lat, lon: Double
-    let localTime: String
 }
 
 if let data = try? Data(contentsOf: url) {
